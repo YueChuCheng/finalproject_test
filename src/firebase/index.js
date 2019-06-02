@@ -14,4 +14,5 @@ let config = {
 firebase.initializeApp(config);
 window.firebase=firebase;
 
-
+export const db = firebase.database();
+export const namesRef = db.ref('name');
