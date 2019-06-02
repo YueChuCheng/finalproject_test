@@ -4,6 +4,14 @@ import router from './router'
 import store from './store'
 import './registerServiceWorker'
 import './firebase'
+import 'vuefire';
+//import VueFire from 'vuefire';
+let VueFire=require('vuefire');
+Vue.use(VueFire);
+//import { firestorePlugin } from 'vuefire'
+ 
+//Vue.use(firestorePlugin)
+
 Vue.config.productionTip = false
 
 new Vue({

@@ -1,16 +1,17 @@
 import firebase from 'firebase/app';
 
 let config = {
-    apiKey: "AIzaSyCGHT41JjCdzyOyvWY6r5MtF66PWQe010k",
-    authDomain: "finalprojecttest-ce7e0.firebaseapp.com",
-    databaseURL: "https://finalprojecttest-ce7e0.firebaseio.com",
-    projectId: "finalprojecttest-ce7e0",
-    storageBucket: "finalprojecttest-ce7e0.appspot.com",
-    messagingSenderId: "783315037094",
-    appId: "1:783315037094:web:a770e6899697a0c2"
+    apiKey: "AIzaSyDHw4dwSe3ZCsq8YCSELcD5sbHLWkh0hf8",
+  authDomain: "test-write-c7062.firebaseapp.com",
+  databaseURL: "https://test-write-c7062.firebaseio.com",
+  projectId: "test-write-c7062",
+  storageBucket: "test-write-c7062.appspot.com",
+  messagingSenderId: "369128448444",
+  appId: "1:369128448444:web:de14c546b005e292"
  
 }
 
 firebase.initializeApp(config);
-
 window.firebase=firebase;
+
+

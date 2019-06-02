@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-
+import router from './router'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -31,7 +31,7 @@ export default new Vuex.Store({
         this.user = response.user;
         //• 登入成功後，利用Vue-Router提供的 router.push(“/“)即可直接導覽到Main.vue畫面
         this.loading = false;
-        router.push("/");
+        router.push("/about");
       }catch(error){
         this.errors.push(error.message);
         this.loading=false;
