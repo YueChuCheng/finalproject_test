@@ -1,18 +1,26 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <br>
+    <button @click="loginWithGoogle">loginWithGoogle</button>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
-
+import firebase from 'firebase';
+import {mapActions}from 'vuex';
+import {mapState}from 'vuex';
 export default {
   name: 'home',
+
+  computed:mapState(['login']),
+  methods: mapActions(['loginWithGoogle']),
+  
   components: {
-    HelloWorld
+    
   }
-}
+  
+
+};
 </script>
