@@ -1,5 +1,6 @@
 <template>
   <div class="register">
+   
     <form name="form_name" id="form_name">
       <label>Name</label>
       <input type="text" name="name">
@@ -9,20 +10,23 @@
 
     <label>Read</label>
     <br>
-    <button @click="read()">read</button>
+    <button @click="read(),readfirebase()">read</button>
   </div>
 </template>
 
 
 
 <script >
-import { namesRef } from "../firebase";
+
+import {mapState}from 'vuex';
 import {mapActions}from 'vuex';
 import "../firebase";
 export default {
-  methods: {
+  
+  methods: { 
   ...mapActions(['set']),
-  ...mapActions(['read'])
+  ...mapActions(['read']),
+    ...mapActions(['readfirebase'])
   }
 };
 </script>

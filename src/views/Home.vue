@@ -2,7 +2,7 @@
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
     <br>
-    <button @click="loginWithGoogle">loginWithGoogle</button>
+   
   </div>
 </template>
 
