@@ -60,7 +60,8 @@ export default new Vuex.Store({
         .database()
         .ref("users/" + user)
         .set({
-          username: form.name.value
+          username: form.name.value,
+          registerBool:true
         });
     },
     read() {

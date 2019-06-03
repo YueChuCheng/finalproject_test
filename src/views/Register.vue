@@ -1,5 +1,5 @@
 <template>
-  <div class="login">
+  <div class="register">
     <form name="form_name" id="form_name">
       <label>Name</label>
       <input type="text" name="name">
