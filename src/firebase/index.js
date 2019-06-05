@@ -1,18 +1,19 @@
 import firebase from 'firebase/app';
 
 let config = {
-    apiKey: "AIzaSyDHw4dwSe3ZCsq8YCSELcD5sbHLWkh0hf8",
-  authDomain: "test-write-c7062.firebaseapp.com",
-  databaseURL: "https://test-write-c7062.firebaseio.com",
-  projectId: "test-write-c7062",
-  storageBucket: "test-write-c7062.appspot.com",
-  messagingSenderId: "369128448444",
-  appId: "1:369128448444:web:de14c546b005e292"
+  apiKey: "AIzaSyBe2QWeHqJvjkSurqXhqZuU-qqyaOCC4KY",
+  authDomain: "test-firestore-847fa.firebaseapp.com",
+  databaseURL: "https://test-firestore-847fa.firebaseio.com",
+  projectId: "test-firestore-847fa",
+  storageBucket: "test-firestore-847fa.appspot.com",
+  messagingSenderId: "1067319899742",
+  appId: "1:1067319899742:web:8c701210401314f8"
  
 }
 
 firebase.initializeApp(config);
 window.firebase=firebase;
-
-export const db = firebase.database();
-export const namesRef = db.ref('name');
+var db = firebase.firestore();
+//
+//export const db = firebase.database();
+//export const namesRef = db.ref('name');

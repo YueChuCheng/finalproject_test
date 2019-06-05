@@ -32,72 +32,53 @@ export default new Vuex.Store({
   },
   actions: {
     async loginWithGoogle() {
-      var user = firebase.auth().currentUser.uid;
-       
-      firebase
-        .database()
-        .ref("/users/" + user)
-        .on("value", (snapshot) => {
-          this.state.registered.registerBool =  snapshot.val().registerBool;
-
-        });
-         
-      // loading set to true
-      this.loading = true;
-      // clear old errors
-      this.errors = [];
-
-      try {
-        //• 利用ﬁrebase.auth().signInWithPopup()函數， 並且傳遞ﬁrebase.auth.GoogleAuthProvider() 物件就會導向Google的登入畫面
-        //• 如果登入成功就會回覆response變數 
-        let response = await firebase
-          .auth()
-          .signInWithPopup(new firebase.auth.GoogleAuthProvider());
-        this.user = response.user;
-        //• 登入成功後，利用Vue-Router提供的 router.push(“/“)即可直接導覽到Main.vue畫面
-        this.loading = false;
-        if(this.state.registered.registerBool==true){
-          router.push("/");
-          console.log(this.state.registered.registerBool);
-        }
-        else{
-          router.push("/register");
-          console.log(this.state.registered.registerBool);
-          
-        }
-        
-      } catch (error) {
-        this.errors.push(error.message);
-        this.loading = false;
-      }
+      var provider = new firebase.auth.GoogleAuthProvider();
+      provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+      firebase.auth().signInWithPopup(provider).then(function(result) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = result.credential.accessToken;
+        // The signed-in user info.
+        var user = result.user;
+        // ...
+      }).catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // ...
+      });
+    
     },
     set() {
-      var form = document.getElementById("form_name");
       var user = firebase.auth().currentUser.uid;
-      firebase
-        .database()
-        .ref("users/" + user)
-        .set({
-          username: form.name.value,
-          registerBool: true
-        });
+      firebase.firestore().collection("user").doc(user).set({
+        storename: "好食",
+        date: "2010",
+        desctiption: "本劇改編自阿瑟·柯南·道爾爵士家喻戶曉的推理小說，一位脾氣古怪的大偵探在現代倫敦的街頭悄悄巡行，四處搜尋線索。",
+        actors: ["班尼迪克·康柏拜區", "馬丁·費曼"],
+      });
+    
     }
     ,
-    //read() {
-//
-    //  var user = firebase.auth().currentUser.uid;
-    //  
-//
-    //  firebase
-    //    .database()
-    //    .ref("/users/" + user)
-    //    .on("value", async (snapshot) => {
-    //      this.state.registered.registerBool =await snapshot.val().registerBool;
-//
-    //    });
-    //  
-//
-//
-    //}
+    read() {
+
+      var docRef = firebase.firestore().collection("movies").doc("新世紀福爾摩斯");
+      docRef.get().then(function(doc) {
+      if (doc.exists) {
+        console.log(doc.data());
+      } else {
+        console.log("找不到文件");
+      }
+    })
+    .catch(function(error) {
+      console.log("提取文件時出錯:", error);
+    });
+      
+
+
+    }
   }
 })
