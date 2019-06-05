@@ -66,29 +66,19 @@ export default new Vuex.Store({
     
     }
     ,
-    read() {
+    async read() {
       //將docRef包裝成return 變數
       //接取A.then()
-      var r;
-      function read(){
-        var user = firebase.auth().currentUser.uid;
-        var docRef = firebase.firestore().collection("user").doc(user);
-        docRef.get().then(function(doc) {
-          var i;
-          i= doc.data()
-          return i;
-
-      })
-      .catch(function(error) {
+     let user =firebase.auth().currentUser.uid;
+      let docRef = await firebase.firestore().collection("user").doc(user)
+       try{
+         let doc =await docRef.get();
+         this.state.registered.registerBool= doc.data()
+       }
+       catch(error){
         console.log("提取文件時出錯:", error);
-      });
-        console.log(read);
-  
-       
-      }
-     
-      read().then(r=i);
-      console.log(r);
+       }
+        console.log(this.state.registered.registerBool.tel);
     }
    
 
