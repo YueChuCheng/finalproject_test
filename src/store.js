@@ -31,6 +31,7 @@ export default new Vuex.Store({
   mutations: {
   },
   actions: {
+    
     async loginWithGoogle() {
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
@@ -39,7 +40,9 @@ export default new Vuex.Store({
         var token = result.credential.accessToken;
         // The signed-in user info.
         var user = result.user;
-        // ...
+         // ...
+        router.push('/')//if login change to home page
+       
       }).catch(function(error) {
         // Handle Errors here.
         var errorCode = error.code;
@@ -56,29 +59,38 @@ export default new Vuex.Store({
       var user = firebase.auth().currentUser.uid;
       firebase.firestore().collection("user").doc(user).set({
         storename: "好食",
-        date: "2010",
-        desctiption: "本劇改編自阿瑟·柯南·道爾爵士家喻戶曉的推理小說，一位脾氣古怪的大偵探在現代倫敦的街頭悄悄巡行，四處搜尋線索。",
-        actors: ["班尼迪克·康柏拜區", "馬丁·費曼"],
+        address:"台北市",
+        tel: "0975975670",
+        time:"7-11"
       });
     
     }
     ,
     read() {
+      //將docRef包裝成return 變數
+      //接取A.then()
+      var r;
+      function read(){
+        var user = firebase.auth().currentUser.uid;
+        var docRef = firebase.firestore().collection("user").doc(user);
+        docRef.get().then(function(doc) {
+          var i;
+          i= doc.data()
+          return i;
 
-      var docRef = firebase.firestore().collection("movies").doc("新世紀福爾摩斯");
-      docRef.get().then(function(doc) {
-      if (doc.exists) {
-        console.log(doc.data());
-      } else {
-        console.log("找不到文件");
+      })
+      .catch(function(error) {
+        console.log("提取文件時出錯:", error);
+      });
+        console.log(read);
+  
+       
       }
-    })
-    .catch(function(error) {
-      console.log("提取文件時出錯:", error);
-    });
-      
-
-
+     
+      read().then(r=i);
+      console.log(r);
     }
+   
+
   }
 })
