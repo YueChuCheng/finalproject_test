@@ -27,12 +27,12 @@
       
     </form>
     <br>
-    <button @click="set()">Add</button>
+    <button @click="set(),read()">Add</button>
     <br>
 
     <label>Read</label>
     <br>
-    <button @click="read(),readfirebase()">read</button>
+    <button @click="read()">read</button>
   </div>
 </template>
 
@@ -48,7 +48,7 @@ export default {
   methods: { 
   ...mapActions(['set']),
   ...mapActions(['read']),
-    ...mapActions(['readfirebase'])
+    
   }
 };
 </script>

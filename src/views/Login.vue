@@ -1,7 +1,8 @@
 <template>
   <div class="login">
-    <button @click="loginWithGoogle">loginWithGoogle</button>
-   
+    <button @click="loginWithGoogle();read()">loginWithGoogle</button>
+    <br>
+    <button @click="signout()">signout</button>
     <br>
 
     <label>Read</label>
@@ -18,11 +19,18 @@ import {mapState}from 'vuex';
 import {mapActions}from 'vuex';
 import "../firebase";
 export default {
-  computed:mapState(['login']),
+  computed:{
+    ...mapState(['login']),
+    ...mapState(['registerBool'])
+    },
   methods: {
   ...mapActions(['loginWithGoogle']),  
+  ...mapActions(['signout']),
   ...mapActions(['set']),
   ...mapActions(['read'])
   }
+  
 };
+
+
 </script>

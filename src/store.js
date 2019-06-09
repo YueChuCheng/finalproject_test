@@ -16,6 +16,7 @@ export default new Vuex.Store({
     registered: {
       userid: '',
       registerBool: '',
+      username:''
     }
   },
   getters: {
@@ -31,22 +32,22 @@ export default new Vuex.Store({
   mutations: {
   },
   actions: {
-
-    async loginWithGoogle() {
-
+    signout(){
+      firebase.auth().signOut();
+    },
+    async loginWithGoogle() { 
       //讀取資料
-      let user = firebase.auth().currentUser.uid;
-      let docRef = await firebase.firestore().collection("user").doc(user)
-      try {
-        let doc = await docRef.get();
-        this.state.registered.registerBool = doc.data()
-      }
-      catch (error) {
-        console.log("提取文件時出錯:", error);
-      }
-      
-      var registerBool=this.state.registered.registerBool; //save registerBool in local varible 
-
+      //let docRef = await firebase.firestore().collection("user").doc(user)
+      //let user = firebase.auth().currentUser.uid;
+      //try {
+      //  let doc = await docRef.get();
+      //  this.state.registered.registerBool = doc.data()
+      //}
+      //catch (error) {
+      //  console.log("提取文件時出錯:", error);
+      //}
+      //
+      //var registerBool=this.state.registered.registerBool; //save registerBool in local varible
 
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
@@ -54,9 +55,12 @@ export default new Vuex.Store({
         // This gives you a Google Access Token. You can use it to access the Google API.
         var token = result.credential.accessToken;
         // The signed-in user info.
-        var user = result.user;
+        //var user = result.user;
         // ...
-        console.log(registerBool);
+        let user = firebase.auth().currentUser.uid;
+        let docRef =  firebase.firestore().collection("user").doc(user).get();
+        
+        console.log( docRef);
         if (registerBool!=undefined) {
           router.push('/')//if login change to home page
         }
@@ -76,7 +80,8 @@ export default new Vuex.Store({
         var credential = error.credential;
         // ...
       });
-
+      //
+     
     },
     set() {
       var user = firebase.auth().currentUser.uid;
@@ -100,7 +105,10 @@ export default new Vuex.Store({
       catch (error) {
         console.log("提取文件時出錯:", error);
       }
-      console.log(this.state.registered.registerBool);
+      //console.log(this.state.registered.registerBool);
+      
+      this.state.registered.username=this.state.registered.registerBool.storename;
+      console.log(this.state.registered.username);
     }
 
 
