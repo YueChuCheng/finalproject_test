@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import router from './router'
-
+import $ from 'jquery'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
@@ -15,7 +15,7 @@ export default new Vuex.Store({
     },
     registered: {
       userid: '',
-      registerBool:'',
+      registerBool: '',
     }
   },
   getters: {
@@ -23,27 +23,50 @@ export default new Vuex.Store({
     getregisterBool: state => {
       return state.registered.registerBool;
     },
-    setvalue(value){
-      this.state.registered.registerBool=value;
+    setvalue(value) {
+      this.state.registered.registerBool = value;
     }
   }
   ,
   mutations: {
   },
   actions: {
-    
+
     async loginWithGoogle() {
+
+      //讀取資料
+      let user = firebase.auth().currentUser.uid;
+      let docRef = await firebase.firestore().collection("user").doc(user)
+      try {
+        let doc = await docRef.get();
+        this.state.registered.registerBool = doc.data()
+      }
+      catch (error) {
+        console.log("提取文件時出錯:", error);
+      }
+      
+      var registerBool=this.state.registered.registerBool; //save registerBool in local varible 
+
+
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-      firebase.auth().signInWithPopup(provider).then(function(result) {
+      firebase.auth().signInWithPopup(provider).then(function (result) {
         // This gives you a Google Access Token. You can use it to access the Google API.
         var token = result.credential.accessToken;
         // The signed-in user info.
         var user = result.user;
-         // ...
-        router.push('/')//if login change to home page
-       
-      }).catch(function(error) {
+        // ...
+        console.log(registerBool);
+        if (registerBool!=undefined) {
+          router.push('/')//if login change to home page
+        }
+        else {
+          alert("你沒有註冊過喔");
+          router.push('/register')//if not register ever change to register page
+         
+        }
+
+      }).catch(function (error) {
         // Handle Errors here.
         var errorCode = error.code;
         var errorMessage = error.message;
@@ -53,34 +76,33 @@ export default new Vuex.Store({
         var credential = error.credential;
         // ...
       });
-    
+
     },
     set() {
       var user = firebase.auth().currentUser.uid;
       firebase.firestore().collection("user").doc(user).set({
-        storename: "好食",
-        address:"台北市",
-        tel: "0975975670",
-        time:"7-11"
+        storename: $("input[name='name']").val(),
+        address: $("input[name='address']").val(),
+        tel: $("input[name='tel']").val(),
+        time: $("input[name='time']").val(),
+        registerBool: "true"
       });
-    
+
     }
     ,
     async read() {
-      //將docRef包裝成return 變數
-      //接取A.then()
-     let user =firebase.auth().currentUser.uid;
+      let user = firebase.auth().currentUser.uid;
       let docRef = await firebase.firestore().collection("user").doc(user)
-       try{
-         let doc =await docRef.get();
-         this.state.registered.registerBool= doc.data()
-       }
-       catch(error){
+      try {
+        let doc = await docRef.get();
+        this.state.registered.registerBool = doc.data()
+      }
+      catch (error) {
         console.log("提取文件時出錯:", error);
-       }
-        console.log(this.state.registered.registerBool.tel);
+      }
+      console.log(this.state.registered.registerBool);
     }
-   
+
 
   }
 })
