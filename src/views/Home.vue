@@ -2,7 +2,7 @@
   <div class="home">
     <Nav/>
     <img alt="Vue logo" src="../assets/logo.png">
-    {{storeSet[0].Name}}
+    {{storeSet[0].Adress}}
     <br>
   </div>
 </template>

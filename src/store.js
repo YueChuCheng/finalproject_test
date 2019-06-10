@@ -13,17 +13,17 @@ export default new Vuex.Store({
       loading: false,
       user: ""
     },
-    store:{
-      storeSet:[]
+    store: {
+      storeSet: []
     }
     ,
     registered: {//儲存註冊資訊
       registerBool: '', //是否曾經註冊bool
-      username:''//儲存登入後用戶名稱
+      username: ''//儲存登入後用戶名稱
     }
   },
   getters: {
-    storeSet:state=>state.store.storeSet,
+    storeSet: state => state.store.storeSet,
   }
   ,
   mutations: {
@@ -36,15 +36,15 @@ export default new Vuex.Store({
     //  catch (error) {
     //    console.log("提取文件時出錯:", error);
     //  }
-     INIT(){
-      let docRef =  firebase.firestore().collection("Restaurant1").doc("Info")
+    INIT() {
+      let docRef = firebase.firestore().collection("Restaurant1").doc("Info")
       try {
-        let doc =  docRef.get();
+        let doc = docRef.get();
         console.log(doc);
-        let n=doc.data().Adress;
-        
+        let n = doc.data().Adress;
+
         state.store.storeSet.push(n);
-        
+
       }
       catch (error) {
         console.log("提取文件時出錯:", error);
@@ -57,13 +57,13 @@ export default new Vuex.Store({
   actions: {
     async init({ commit }) {
       commit('INIT')
-  },
+    },
 
 
-    signout(){
+    signout() {
       firebase.auth().signOut();
     },
-    async loginWithGoogle() { 
+    async loginWithGoogle({ dispatch }) {
       //讀取資料
       //let docRef = await firebase.firestore().collection("user").doc(user)
       //let user = firebase.auth().currentUser.uid;
@@ -79,23 +79,26 @@ export default new Vuex.Store({
 
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-      firebase.auth().signInWithPopup(provider).then(function (result) {
+      firebase.auth().signInWithPopup(provider).then( async function (result) {
         // This gives you a Google Access Token. You can use it to access the Google API.
         var token = result.credential.accessToken;
         // The signed-in user info.
         //var user = result.user;
         // ...
         let user = firebase.auth().currentUser.uid;
-        let docRef =  firebase.firestore().collection("user").doc(user).get();
-        
-        console.log( docRef);
-        if (registerBool!=undefined) {
+       
+        let doc =await firebase.firestore().collection("user").doc(user).get()
+        console.log(doc.data().registerBool);
+        //console.log( docRef);
+        //dispatch('readbool');
+        //console.log(this.state.registered.registerBool);
+        if (doc.data().registerBool == "true") {
           router.push('/')//if login change to home page
         }
         else {
           alert("你沒有註冊過喔");
           router.push('/register')//if not register ever change to register page
-         
+
         }
 
       }).catch(function (error) {
@@ -109,7 +112,7 @@ export default new Vuex.Store({
         // ...
       });
       //
-     
+
     },
     set() {
       var user = firebase.auth().currentUser.uid;
@@ -121,10 +124,29 @@ export default new Vuex.Store({
         registerBool: "true"
       });
 
+    },
+    async readbool() {
+      // let user = firebase.auth().currentUser.uid;
+      let user = firebase.auth().currentUser.uid;
+      let docRef = await firebase.firestore().collection("user").doc(user)
+      try {
+        let doc = await docRef.get();
+
+        console.log(doc.data().registerBool);
+        this.state.registered.registerBool = doc.data().registerBool;
+      }
+      catch (error) {
+        console.log("提取文件時出錯:", error);
+      }
+      //console.log(this.state.registered.registerBool);
+
+      // this.state.registered.username=this.state.registered.registerBool.storename;
+      //console.log(this.state.registered.username);
     }
+
     ,
     async read() {
-     // let user = firebase.auth().currentUser.uid;
+      // let user = firebase.auth().currentUser.uid;
       let docRef = await firebase.firestore().collection("Restaurant1").doc("Info")
       try {
         let doc = await docRef.get();
@@ -137,8 +159,8 @@ export default new Vuex.Store({
         console.log("提取文件時出錯:", error);
       }
       //console.log(this.state.registered.registerBool);
-      
-     // this.state.registered.username=this.state.registered.registerBool.storename;
+
+      // this.state.registered.username=this.state.registered.registerBool.storename;
       //console.log(this.state.registered.username);
     }
 

@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <button @click="loginWithGoogle();read()">loginWithGoogle</button>
+    <button @click="loginWithGoogle();/*read()*/">loginWithGoogle</button>
     <br>
     <button @click="signout()">signout</button>
     <br>
