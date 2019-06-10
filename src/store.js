@@ -28,31 +28,7 @@ export default new Vuex.Store({
   ,
   mutations: {
 
-    //let docRef = await firebase.firestore().collection("user").doc(user)
-    //  try {
-    //    let doc = await docRef.get();
-    //    this.state.registered.registerBool = doc.data()
-    //  }
-    //  catch (error) {
-    //    console.log("提取文件時出錯:", error);
-    //  }
-    INIT() {
-      let docRef = firebase.firestore().collection("Restaurant1").doc("Info")
-      try {
-        let doc = docRef.get();
-        console.log(doc);
-        let n = doc.data().Adress;
-
-        state.store.storeSet.push(n);
-
-      }
-      catch (error) {
-        console.log("提取文件時出錯:", error);
-      }
-
-      //state.store.storeSet.push(firebase.firestore().collection("Restaurant1").doc(Info));
-    }
-
+    
   },
   actions: {
     async init({ commit }) {
@@ -63,40 +39,24 @@ export default new Vuex.Store({
     signout() {
       firebase.auth().signOut();
     },
-    async loginWithGoogle({ dispatch }) {
-      //讀取資料
-      //let docRef = await firebase.firestore().collection("user").doc(user)
-      //let user = firebase.auth().currentUser.uid;
-      //try {
-      //  let doc = await docRef.get();
-      //  this.state.registered.registerBool = doc.data()
-      //}
-      //catch (error) {
-      //  console.log("提取文件時出錯:", error);
-      //}
-      //
-      //var registerBool=this.state.registered.registerBool; //save registerBool in local varible
-
+    async loginWithGoogle() {
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-      firebase.auth().signInWithPopup(provider).then( async function (result) {
+      firebase.auth().signInWithPopup(provider).then( async function (result) { //以非同步函示才能取得接收值
         // This gives you a Google Access Token. You can use it to access the Google API.
         var token = result.credential.accessToken;
         // The signed-in user info.
         //var user = result.user;
         // ...
-        let user = firebase.auth().currentUser.uid;
-       
+        let user = firebase.auth().currentUser.uid;//取得使用者uid
         let doc =await firebase.firestore().collection("user").doc(user).get()
-        console.log(doc.data().registerBool);
-        //console.log( docRef);
-        //dispatch('readbool');
-        //console.log(this.state.registered.registerBool);
-        if (doc.data().registerBool == "true") {
+        console.log(doc.data().registerBool);//取得是否曾經註冊的bool值
+
+        if (doc.data().registerBool == "true") { //若曾經註冊
           router.push('/')//if login change to home page
         }
-        else {
-          alert("你沒有註冊過喔");
+        else {//若未註冊
+          alert("需註冊才能使用店家功能!");
           router.push('/register')//if not register ever change to register page
 
         }
@@ -124,44 +84,19 @@ export default new Vuex.Store({
         registerBool: "true"
       });
 
-    },
-    async readbool() {
-      // let user = firebase.auth().currentUser.uid;
-      let user = firebase.auth().currentUser.uid;
-      let docRef = await firebase.firestore().collection("user").doc(user)
-      try {
-        let doc = await docRef.get();
-
-        console.log(doc.data().registerBool);
-        this.state.registered.registerBool = doc.data().registerBool;
-      }
-      catch (error) {
-        console.log("提取文件時出錯:", error);
-      }
-      //console.log(this.state.registered.registerBool);
-
-      // this.state.registered.username=this.state.registered.registerBool.storename;
-      //console.log(this.state.registered.username);
     }
-
     ,
     async read() {
-      // let user = firebase.auth().currentUser.uid;
+     
       let docRef = await firebase.firestore().collection("Restaurant1").doc("Info")
       try {
         let doc = await docRef.get();
-
-        console.log(doc.data());
         this.state.store.storeSet.push(doc.data());
-        console.log(this.state.store.storeSet);
+    
       }
       catch (error) {
         console.log("提取文件時出錯:", error);
       }
-      //console.log(this.state.registered.registerBool);
-
-      // this.state.registered.username=this.state.registered.registerBool.storename;
-      //console.log(this.state.registered.username);
     }
 
 
