@@ -6,32 +6,60 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    login: {
+    login: { //儲存firestore資料
       email: "",
       password: "",
       errors: [],
       loading: false,
       user: ""
     },
-    registered: {
-      userid: '',
-      registerBool: '',
-      username:''
+    store:{
+      storeSet:[]
+    }
+    ,
+    registered: {//儲存註冊資訊
+      registerBool: '', //是否曾經註冊bool
+      username:''//儲存登入後用戶名稱
     }
   },
   getters: {
-    registerBool: state => state.registered.registerBool,
-    getregisterBool: state => {
-      return state.registered.registerBool;
-    },
-    setvalue(value) {
-      this.state.registered.registerBool = value;
-    }
+    storeSet:state=>state.store.storeSet,
   }
   ,
   mutations: {
+
+    //let docRef = await firebase.firestore().collection("user").doc(user)
+    //  try {
+    //    let doc = await docRef.get();
+    //    this.state.registered.registerBool = doc.data()
+    //  }
+    //  catch (error) {
+    //    console.log("提取文件時出錯:", error);
+    //  }
+     INIT(){
+      let docRef =  firebase.firestore().collection("Restaurant1").doc("Info")
+      try {
+        let doc =  docRef.get();
+        console.log(doc);
+        let n=doc.data().Adress;
+        
+        state.store.storeSet.push(n);
+        
+      }
+      catch (error) {
+        console.log("提取文件時出錯:", error);
+      }
+
+      //state.store.storeSet.push(firebase.firestore().collection("Restaurant1").doc(Info));
+    }
+
   },
   actions: {
+    async init({ commit }) {
+      commit('INIT')
+  },
+
+
     signout(){
       firebase.auth().signOut();
     },
@@ -96,19 +124,22 @@ export default new Vuex.Store({
     }
     ,
     async read() {
-      let user = firebase.auth().currentUser.uid;
-      let docRef = await firebase.firestore().collection("user").doc(user)
+     // let user = firebase.auth().currentUser.uid;
+      let docRef = await firebase.firestore().collection("Restaurant1").doc("Info")
       try {
         let doc = await docRef.get();
-        this.state.registered.registerBool = doc.data()
+
+        console.log(doc.data());
+        this.state.store.storeSet.push(doc.data());
+        console.log(this.state.store.storeSet);
       }
       catch (error) {
         console.log("提取文件時出錯:", error);
       }
       //console.log(this.state.registered.registerBool);
       
-      this.state.registered.username=this.state.registered.registerBool.storename;
-      console.log(this.state.registered.username);
+     // this.state.registered.username=this.state.registered.registerBool.storename;
+      //console.log(this.state.registered.username);
     }
 
 
