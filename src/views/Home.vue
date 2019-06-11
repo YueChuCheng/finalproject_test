@@ -2,10 +2,17 @@
   <div class="home">
     <Nav/>
     <img alt="Vue logo" src="../assets/logo.png">
-    {{storeSet[0].Adress}}
+    <p>店名: {{hello.Name}}</p>
+    <p>地址: {{hello.Adress}}</p>
+    <p>外送時間: {{hello.OpenTime}}</p>
+    <p>電話: {{hello.TEL}}</p>
+    <!-- 按下查看店家資訊案件 儲存店家ID -->
+    <button @click="save('太和豆漿ID')">submit</button>
     <br>
   </div>
 </template>
+
+
 
 <script>
 // @ is an alias to /src
@@ -16,17 +23,36 @@ import { mapState } from "vuex";
 import { mapGetters } from "vuex";
 export default {
   name: "home",
+  data(){
+    return {
+      hello: {
+        Name: "",
+        Adress: "",
+        OpenTime: "",
+        TEL: ""
+      }
+    } 
+  },
   computed: { ...mapState(["login"]), ...mapGetters(["storeSet"]) },
   methods: {
     ...mapActions(["read"]),
-    ...mapActions(["loginWithGoogle"])
+    ...mapActions(["loginWithGoogle"]),
+    save(storeString){ //按下查看店家資訊案件 儲存店家ID
+      this.$store.state.store.storClick=storeString;
+      console.log(this.$store.state.store.storClick);
+    }
   },
-
   components: {
     Nav
   },
-  created() {
-    this.read();
+  async created() {
+    this.hello = await this.read();
+  
   }
 };
 </script>
+<style scoped>
+img {
+  margin-top: 200px;
+}
+</style>

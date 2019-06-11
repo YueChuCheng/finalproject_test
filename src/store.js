@@ -14,23 +14,34 @@ export default new Vuex.Store({
       user: ""
     },
     store: {
-      storeSet: []
-    }
+      storeSet: [],//儲存Home店家資訊
+      storClick:""
+    },
+
+    registerBool: false//是否在登入狀態
+
     ,
-    registered: {//儲存註冊資訊
-      registerBool: '', //是否曾經註冊bool
-      username: ''//儲存登入後用戶名稱
+    user: {//儲存註冊資訊
+      username: '',//儲存登入後用戶名稱
+      userid: ''
+
     }
   },
   getters: {
     storeSet: state => state.store.storeSet,
+    registerBool: state => state.registerBool,
   }
   ,
   mutations: {
 
-    
+
   },
   actions: {
+    updateBool(){
+      console.log("yesss")
+      this.state.registerBool = true;
+    },
+
     async init({ commit }) {
       commit('INIT')
     },
@@ -39,26 +50,31 @@ export default new Vuex.Store({
     signout() {
       firebase.auth().signOut();
     },
+
     async loginWithGoogle() {
+      //self=this 可用此方法於firebase函式中取得state變數
+
+
       var provider = new firebase.auth.GoogleAuthProvider();
       provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-      firebase.auth().signInWithPopup(provider).then( async function (result) { //以非同步函示才能取得接收值
+      
+      var res = await firebase.auth().signInWithPopup(provider).then(async function (result) { //以非同步函示才能取得接收值
         // This gives you a Google Access Token. You can use it to access the Google API.
         var token = result.credential.accessToken;
         // The signed-in user info.
         //var user = result.user;
         // ...
         let user = firebase.auth().currentUser.uid;//取得使用者uid
-        let doc =await firebase.firestore().collection("user").doc(user).get()
-        console.log(doc.data().registerBool);//取得是否曾經註冊的bool值
+        let doc = await firebase.firestore().collection("user").doc(user).get()
+
 
         if (doc.data().registerBool == "true") { //若曾經註冊
-          router.push('/')//if login change to home page
+          console.log("login successful")
+          return 'login';
         }
         else {//若未註冊
           alert("需註冊才能使用店家功能!");
-          router.push('/register')//if not register ever change to register page
-
+          return 'register';
         }
 
       }).catch(function (error) {
@@ -71,9 +87,26 @@ export default new Vuex.Store({
         var credential = error.credential;
         // ...
       });
-      //
 
+      return res//回傳跳哪一頁的值
     },
+
+    async readUser() { //登入時讀取User資料
+      var user = firebase.auth().currentUser.uid;
+      let docRef = await firebase.firestore().collection("user").doc(user)
+      try {
+        let doc = await docRef.get();
+        this.state.user.userid = user; //填入User uid
+        this.state.user.username = doc.data().storename;//填入User Name
+        this.state.registerBool = true;//若登入則設為true        
+        
+      }
+      catch (error) {
+        console.log("提取文件時出錯:", error);
+      }
+    }
+
+    ,
     set() {
       var user = firebase.auth().currentUser.uid;
       firebase.firestore().collection("user").doc(user).set({
@@ -87,15 +120,15 @@ export default new Vuex.Store({
     }
     ,
     async read() {
-     
       let docRef = await firebase.firestore().collection("Restaurant1").doc("Info")
       try {
         let doc = await docRef.get();
-        this.state.store.storeSet.push(doc.data());
-    
+        return doc.data();
+
       }
       catch (error) {
         console.log("提取文件時出錯:", error);
+        return false;
       }
     }
 

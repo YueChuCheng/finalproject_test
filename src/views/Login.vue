@@ -1,8 +1,9 @@
 <template>
   <div class="login">
-    <button @click="loginWithGoogle();/*read()*/">loginWithGoogle</button>
+    <!-- 當login時順便取得使用者資料做顯示 -->
+    <button @click="doLogin">loginWithGoogle</button>
     <br>
-    <button @click="signout()">signout</button>
+    <button @click="signout">signout</button>
     <br>
 
     <label>Read</label>
@@ -24,10 +25,23 @@ export default {
     ...mapState(['registerBool'])
     },
   methods: {
-  ...mapActions(['loginWithGoogle']),  
+  ...mapActions(['updateBool']),
+  ...mapActions(['loginWithGoogle']),
+  ...mapActions(['readUser']),  
   ...mapActions(['signout']),
   ...mapActions(['set']),
-  ...mapActions(['read'])
+  ...mapActions(['read']),
+
+    async doLogin(){
+      let status = await this.loginWithGoogle();
+      console.log(status);
+      this.readUser();
+      if(status === 'login')
+        this.$router.push({path: '/'}) //if not register ever change to register page
+      else if(status === 'register')
+        this.$router.push({path: '/register'}) //if not register ever change to register page
+
+    }
   }
   
 };
